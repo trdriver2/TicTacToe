@@ -1,0 +1,20 @@
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 300px);
+    grid-auto-rows: 300px;
+    grid-row-gap: 0;
+    margin-left: 510px; 
+    margin:0 auto;
+    width: 900px;
+}
+.board button{
+    background-color: #00731A;
+    border-color: black;
+    padding: 0;
+    font-size: 200px;
+    outline: 0;
+}
+
+.board button:hover{
+    background-color: #035E17
+}
