@@ -2,6 +2,7 @@ class Board{
     constructor(){
         this.board=new Array(9)
         this.player='X'
+        this.turn=0;
         for(let i=0;i<9;i++)
             this.board[i]="N"
     }
@@ -19,21 +20,21 @@ class Board{
         {
             console.log("The value that you provided is not in range")
             console.log("Please give a value that is 0-8")
-            return false   
+            return ""   
         }
         if(this.board[space]!== "N")
         {
             console.log("That space is allready taken by", this.board[space], ",\npick another")
-            return false
+            return ""
         }
 
         this.board[space]=this.player
         if(this.player=='X')
-            this.player='0'
+            this.player='O'
         else
             this.player='X'
-
-        return true
+        this.turn++;
+        return this.board[space];
     }
 
     check(space)
@@ -54,8 +55,8 @@ class Board{
             {
                 if(this.board[0] === this.board[space] && this.board[0] === this.board[4] && this.board[0] === this.board[8])
                     return true;
-                else if(space != 4)
-                    return false
+                /*else if(space != 4)
+                    return false*/
             }
 
             if(space === 2 || space === 6 || space ===4)
@@ -63,10 +64,12 @@ class Board{
                 if(this.board[2] === this.board[space] && this.board[2] === this.board[4] && this.board[2] === this.board[6])
                     return true;
             }
-            return false
         }
-    }
 
+        if(this.turn===9)
+            return "tie"
+        return false
+    }
 
     printBoard()
     {
@@ -79,13 +82,20 @@ class Board{
         }
         console.log(output)
     }
+
+    reset()
+    {
+        for(i=0;i<this.board.length;i++)
+            this.board[i]='N'
+        this.turn=0;
+    }
 }
 
 let b = new Board()
 
 const {question} = require('readline-sync')
 
-for(i=0, win=false; !win && i<9; i++)
+/*for(i=0, win=false; !win && i<9; i++)
 {   
     while(!win)
     {
@@ -95,4 +105,25 @@ for(i=0, win=false; !win && i<9; i++)
         win=b.check(num)
         console.log(win)
     }
+}*/
+
+function place(pos)
+{
+    let buttons = document.getElementsByTagName('button')
+    player=b.place(pos)
+    if(player!="")
+        buttons[pos].innerHTML=player;
+
+    win = b.check(pos);
+    if(win || win ==="tie")
+    {
+        if(win!="tie")
+            setTimeout(window.alert(player + " wins"), 50)
+        else
+            setTimeout(window.alert("Tie"), 50)
+        for(i=0;i<buttons.length;i++)
+            buttons[i].innerHTML="";
+        b.reset()
+    }
 }
+
