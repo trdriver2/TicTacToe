@@ -36,39 +36,37 @@ class Board{
         return true
     }
 
-    check()
+    check(space)
     {
-        if(space%2 === 0) //check diagonals
-        {
-            
-        }
+         //something horizontal
+        let temp = space-(space%3)
+        if(this.board[temp] === this.board[space] && this.board[temp] === this.board[temp+1] && this.board[temp] === this.board[temp+2])
+            return true;
+
+        //something verticle
+        temp = space - temp
+        if(this.board[temp] === this.board[space] && this.board[temp] === this.board[temp+3] && this.board[temp] === this.board[temp+6])
+            return true;
         
-        if((space+1)%3 !== 0) //check right
+        if(space%2===0)
         {
+            if(space === 0 || space === 8 || space ===4)
+            {
+                if(this.board[0] === this.board[space] && this.board[0] === this.board[4] && this.board[0] === this.board[8])
+                    return true;
+                else if(space != 4)
+                    return false
+            }
 
+            if(space === 2 || space === 6 || space ===4)
+            {
+                if(this.board[2] === this.board[space] && this.board[2] === this.board[4] && this.board[2] === this.board[6])
+                    return true;
+            }
+            return false
         }
-
-        if(space%3 !== 0) //check left
-        {
-
-        }
-
-        if(space < 6) //check down
-        {
-
-        }
-
-        if(space > 2) //check up
-        {
-
-        }
-
     }
 
-    predict()
-    {
-
-    }
 
     printBoard()
     {
@@ -87,14 +85,14 @@ let b = new Board()
 
 const {question} = require('readline-sync')
 
-for(i=0; i<9; i++)
+for(i=0, win=false; !win && i<9; i++)
 {   
-    
-    let test = false
-    while(!test)
+    while(!win)
     {
         num = parseInt(question("Please enter a number"))
         test = b.place(num)
         b.printBoard()
+        win=b.check(num)
+        console.log(win)
     }
 }
