@@ -55,23 +55,6 @@ class Board{
         if(this.board[verticle] === this.board[space] && this.board[verticle] === this.board[verticle+3] && this.board[verticle] === this.board[verticle+6])
             return true;
         
-        /*if(space%2===0)
-        {
-            if(space === 0 || space === 8 || space ===4)
-            {
-                if(this.board[0] === this.board[space] && this.board[0] === this.board[4] && this.board[0] === this.board[8])
-                    return true;
-                /*else if(space != 4)
-                    return false*/
-            /*}
-
-            if(space === 2 || space === 6 || space ===4)
-            {
-                if(this.board[2] === this.board[space] && this.board[2] === this.board[4] && this.board[2] === this.board[6])
-                    return true;
-            }
-        }*/
-        
         let diagDr = this.dimension+1
         let diagDl = this.dimension-1
         //check diag down-right
