@@ -13,7 +13,7 @@ button:active{
 }
 .board {
     display: grid;
-    grid-template-columns: repeat(var(--colNum), 30%);
+    grid-template-columns: repeat(var(--num), 30%);
     grid-auto-rows: 30%;
     grid-row-gap: 0;
     margin-left: 510px; 

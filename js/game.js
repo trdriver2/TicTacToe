@@ -1,6 +1,6 @@
 class Board{
     constructor(dimension){
-        this.board=new Array(9)
+        this.board=new Array(dimension*dimension)
         this.player='X'
         this.turn=0;
         this.dimension=dimension
@@ -38,6 +38,16 @@ class Board{
         return this.board[space];
     }
 
+    midCheck(init, space, additive)
+    {
+        let end=init+((additive)*(this.dimension-1))
+        for(let i = init; i < end; i+=additive)
+        {
+            if(this.board[i] !== this.board[space])
+                return false
+        }
+        return true
+    }
     check(space)
     {
         let horizontal=space-(space%this.dimension)
@@ -48,49 +58,25 @@ class Board{
         let bottomLeft=bottomRight-topRight
 
         //check horizontal
-        if(this.board[horizontal] === this.board[space] && this.board[horizontal] === this.board[horizontal+1] && this.board[horizontal] === this.board[horizontal+2])
+        if(this.midCheck(horizontal,space,1))
             return true;
-
+        
         //check verticle
-        if(this.board[verticle] === this.board[space] && this.board[verticle] === this.board[verticle+3] && this.board[verticle] === this.board[verticle+6])
+        if(this.midCheck(verticle,space,this.dimension))
             return true;
         
         let diagDr = this.dimension+1
         let diagDl = this.dimension-1
         //check diag down-right
-        if((space%diagDr) === 0)
-        {
-            let test = true
-            for(let i = 0; i < this.board.length; i+=diagDr)
-            {
-                //console.log(i)
-                if(this.board[i] !== this.board[space])
-                {    
-                    test = false
-                    //break;
-                }
-            }
-            if(test)
-                return true;
-        }
+        if(this.midCheck(topLeft,space,diagDr))
+            true
         //check diag down-left
-        if(((space%diagDl === 0) && (space%diagDr !== 0)) || ((bottomRight%2) === 0 && space === (bottomRight/2)))
-        {
-            let test = true;
-            for(let i = topRight; i <= bottomLeft; i+=(diagDl))
-            {
-                if(this.board[i] !== this.board[space])
-                {   console.log(i)
-                    test = false
-                    break;
-                }
-            }
-            if(test)
-                return true;
-        }
+        if(this.midCheck(topRight,space,diagDl))
+            true
         
         if(this.turn===this.board.length)
             return "tie"
+        
         return false
     }
 
@@ -113,20 +99,21 @@ class Board{
         this.turn=0;
     }
 }
-let dim = 4
+let dim = 3
 let b = new Board(dim)
 let htmlBoard=document.getElementsByClassName("board")[0];
-for(i = 0; i<dim-3; i++)
+
+let pass = ''
+for(i = 0; i<(dim*dim)-9; i++)
 {
-    console.log("<button type=button onclick=place("+ (i+dim).toString() +")></button>")
-    htmlBoard.appendChild("<button type=button onclick=place("+ (i+dim).toString() +")></button>")
+    pass=document.createRange().createContextualFragment("<button type=button onclick=place("+ (i+9).toString() +")></button>")
+    console.log()
+    htmlBoard.appendChild(pass)
 }
-htmlBoard.style.setProperty("--colNum", dim)
+    htmlBoard.style.setProperty("--num", dim)
 let buttons = document.getElementsByTagName('button');
 
 
-
-const {question} = require('readline-sync')
 
 /*for(i=0, win=false; !win && i<9; i++)
 {   
@@ -141,7 +128,7 @@ const {question} = require('readline-sync')
 }*/
 
 function reset() {
-    for(i=0;i<9;i++)
+    for(i=0;i<(dim*dim);i++)
         buttons[i].innerHTML="";
     b.reset()
 }
@@ -163,6 +150,7 @@ function place(pos)
         setTimeout(window.alert(player + " wins"), 50)
         reset
     }
+    console.log(pos)
 }
 
 
