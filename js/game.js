@@ -1,8 +1,9 @@
 class Board{
-    constructor(){
+    constructor(dimension){
         this.board=new Array(9)
         this.player='X'
         this.turn=0;
+        this.dimension=dimension
         for(let i=0;i<9;i++)
             this.board[i]="N"
     }
@@ -39,17 +40,22 @@ class Board{
 
     check(space)
     {
-         //something horizontal
-        let temp = space-(space%3)
-        if(this.board[temp] === this.board[space] && this.board[temp] === this.board[temp+1] && this.board[temp] === this.board[temp+2])
+        let horizontal=space-(space%this.dimension)
+        let verticle = space-horizontal
+        let topLeft=0;
+        let bottomRight= b.board.length-1;
+        let topRight = this.dimension-1;
+        let bottomLeft=bottomRight-topRight
+
+        //check horizontal
+        if(this.board[horizontal] === this.board[space] && this.board[horizontal] === this.board[horizontal+1] && this.board[horizontal] === this.board[horizontal+2])
             return true;
 
-        //something verticle
-        temp = space - temp
-        if(this.board[temp] === this.board[space] && this.board[temp] === this.board[temp+3] && this.board[temp] === this.board[temp+6])
+        //check verticle
+        if(this.board[verticle] === this.board[space] && this.board[verticle] === this.board[verticle+3] && this.board[verticle] === this.board[verticle+6])
             return true;
         
-        if(space%2===0)
+        /*if(space%2===0)
         {
             if(space === 0 || space === 8 || space ===4)
             {
@@ -57,16 +63,50 @@ class Board{
                     return true;
                 /*else if(space != 4)
                     return false*/
-            }
+            /*}
 
             if(space === 2 || space === 6 || space ===4)
             {
                 if(this.board[2] === this.board[space] && this.board[2] === this.board[4] && this.board[2] === this.board[6])
                     return true;
             }
+        }*/
+        
+        let diagDr = this.dimension+1
+        let diagDl = this.dimension-1
+        //check diag down-right
+        if((space%diagDr) === 0)
+        {
+            let test = true
+            for(let i = 0; i < this.board.length; i+=diagDr)
+            {
+                //console.log(i)
+                if(this.board[i] !== this.board[space])
+                {    
+                    test = false
+                    //break;
+                }
+            }
+            if(test)
+                return true;
         }
-
-        if(this.turn===9)
+        //check diag down-left
+        if(((space%diagDl === 0) && (space%diagDr !== 0)) || ((bottomRight%2) === 0 && space === (bottomRight/2)))
+        {
+            let test = true;
+            for(let i = topRight; i <= bottomLeft; i+=(diagDl))
+            {
+                if(this.board[i] !== this.board[space])
+                {   console.log(i)
+                    test = false
+                    break;
+                }
+            }
+            if(test)
+                return true;
+        }
+        
+        if(this.turn===this.board.length)
             return "tie"
         return false
     }
@@ -91,7 +131,8 @@ class Board{
     }
 }
 
-let b = new Board()
+let b = new Board(3)
+let buttons = document.getElementsByTagName('button');
 
 const {question} = require('readline-sync')
 
@@ -107,23 +148,29 @@ const {question} = require('readline-sync')
     }
 }*/
 
+function reset() {
+    for(i=0;i<9;i++)
+        buttons[i].innerHTML="";
+    b.reset()
+}
+
 function place(pos)
 {
-    let buttons = document.getElementsByTagName('button')
     player=b.place(pos)
     if(player!="")
         buttons[pos].innerHTML=player;
 
     win = b.check(pos);
-    if(win || win ==="tie")
+    if(win ==="tie")
     {
-        if(win!="tie")
-            setTimeout(window.alert(player + " wins"), 50)
-        else
-            setTimeout(window.alert("Tie"), 50)
-        for(i=0;i<buttons.length;i++)
-            buttons[i].innerHTML="";
-        b.reset()
+        setTimeout(window.alert("Tie"), 50)
+        reset();
+    }
+    if(win)
+    {
+        setTimeout(window.alert(player + " wins"), 50)
+        reset
     }
 }
+
 
