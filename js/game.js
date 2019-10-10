@@ -113,9 +113,18 @@ class Board{
         this.turn=0;
     }
 }
-
-let b = new Board(3)
+let dim = 4
+let b = new Board(dim)
+let htmlBoard=document.getElementsByClassName("board")[0];
+for(i = 0; i<dim-3; i++)
+{
+    console.log("<button type=button onclick=place("+ (i+dim).toString() +")></button>")
+    htmlBoard.appendChild("<button type=button onclick=place("+ (i+dim).toString() +")></button>")
+}
+htmlBoard.style.setProperty("--colNum", dim)
 let buttons = document.getElementsByTagName('button');
+
+
 
 const {question} = require('readline-sync')
 
