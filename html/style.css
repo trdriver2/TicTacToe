@@ -12,16 +12,17 @@ button:active{
 }
 .board {
     display: grid;
-    grid-template-columns: repeat(3, 300px);
-    grid-auto-rows: 300px;
+    grid-template-columns: repeat(3, 30%);
+    grid-auto-rows: 30%;
     grid-row-gap: 0;
     margin-left: 510px; 
     margin:0 auto;
-    width: 900px;
+    width: 100vh;
+    height:100vh;
 }
 .board button{
     padding: 0;
-    font-size: 200px;
+    font-size: 800%;
 
 }
 
@@ -35,5 +36,5 @@ button:active{
 .controlPanel button{
     height: 175px;
     width: 175px;
-    font-size: 50px;
+    font-size: 300%;
 } 
