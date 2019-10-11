@@ -123,6 +123,7 @@ function reset() {
     for(i=0;i<(dim*dim);i++)
         buttons[i].innerHTML="";
     b.reset()
+    this.gameOver=false
 }
 
 function place(pos)
