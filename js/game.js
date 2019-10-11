@@ -44,11 +44,9 @@ class Board{
         let end=init+((additive)*(this.dimension))
         for(let i = init; i < end; i+=additive)
         {
-            //console.log(i, this.board[i] !== this.board[space])
             if(this.board[i] !== this.board[space])
                 return false
         }
-        console.log("made it")
         return true
     }
     check(space)
@@ -66,10 +64,6 @@ class Board{
         //check verticle
         if(this.midCheck(verticle,space,this.dimension))
             return true;
-        
-        //console.log(verticle)
-        //console.log(((space-verticle)/(this.dimension)))
-        console.log(verticle === ((space-verticle)/(this.dimension)))
 
         let diagDr = this.dimension+1
         let diagDl = this.dimension-1
@@ -95,7 +89,6 @@ class Board{
             if((i+1)%3 === 0)
                 output+="\n\n"
         }
-        //console.log(output)
     }
 
     reset()
