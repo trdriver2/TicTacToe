@@ -1,16 +1,17 @@
 class Board{
     constructor(dimension){
-        this.board=new Array(9)
+        this.board=new Array(dimension*dimension)
         this.player='X'
         this.turn=0;
         this.dimension=dimension
-        for(let i=0;i<9;i++)
+        this.gameOver=false
+        for(let i=0;i<this.board.length;i++)
             this.board[i]="N"
     }
 
     range(value) //A function that makes sure that a certain index is in range
     {
-        if(value > 8 || value <0)
+        if(value > (this.board.length-1) || value <0)
             return false
         return true
     }
@@ -38,6 +39,18 @@ class Board{
         return this.board[space];
     }
 
+    midCheck(init, space, additive)
+    {
+        let end=init+((additive)*(this.dimension))
+        for(let i = init; i < end; i+=additive)
+        {
+            //console.log(i, this.board[i] !== this.board[space])
+            if(this.board[i] !== this.board[space])
+                return false
+        }
+        console.log("made it")
+        return true
+    }
     check(space)
     {
         let horizontal=space-(space%this.dimension)
@@ -46,64 +59,43 @@ class Board{
         let bottomRight= b.board.length-1;
         let topRight = this.dimension-1;
         let bottomLeft=bottomRight-topRight
-
         //check horizontal
-        if(this.board[horizontal] === this.board[space] && this.board[horizontal] === this.board[horizontal+1] && this.board[horizontal] === this.board[horizontal+2])
-            return true;
-
-        //check verticle
-        if(this.board[verticle] === this.board[space] && this.board[verticle] === this.board[verticle+3] && this.board[verticle] === this.board[verticle+6])
+        if(this.midCheck(horizontal,space,1))
             return true;
         
+        //check verticle
+        if(this.midCheck(verticle,space,this.dimension))
+            return true;
+        
+        //console.log(verticle)
+        //console.log(((space-verticle)/(this.dimension)))
+        console.log(verticle === ((space-verticle)/(this.dimension)))
+
         let diagDr = this.dimension+1
         let diagDl = this.dimension-1
         //check diag down-right
-        if((space%diagDr) === 0)
-        {
-            let test = true
-            for(let i = 0; i < this.board.length; i+=diagDr)
-            {
-                //console.log(i)
-                if(this.board[i] !== this.board[space])
-                {    
-                    test = false
-                    //break;
-                }
-            }
-            if(test)
-                return true;
-        }
+        if((verticle === ((space-verticle)/(this.dimension))) && this.midCheck(topLeft,space,diagDr))
+            return true
         //check diag down-left
-        if(((space%diagDl === 0) && (space%diagDr !== 0)) || ((bottomRight%2) === 0 && space === (bottomRight/2)))
-        {
-            let test = true;
-            for(let i = topRight; i <= bottomLeft; i+=(diagDl))
-            {
-                if(this.board[i] !== this.board[space])
-                {   console.log(i)
-                    test = false
-                    break;
-                }
-            }
-            if(test)
-                return true;
-        }
+        if(((this.dimension-verticle)-1 === ((space-verticle)/(this.dimension))) && this.midCheck(topRight,space,diagDl))
+            return true
         
         if(this.turn===this.board.length)
             return "tie"
+        
         return false
     }
 
     printBoard()
     {
         let output="";
-        for(let i = 0; i<9; i++)
+        for(let i = 0; i<this.board.length; i++)
         {
             output+=this.board[i]+" "
             if((i+1)%3 === 0)
                 output+="\n\n"
         }
-        console.log(output)
+        //console.log(output)
     }
 
     reset()
@@ -111,34 +103,32 @@ class Board{
         for(i=0;i<this.board.length;i++)
             this.board[i]='N'
         this.turn=0;
+        this.gameOver=false
     }
 }
+let dim = 3
+let b = new Board(dim)
+let htmlBoard=document.getElementsByClassName("board")[0];
 
-let b = new Board(3)
+let pass = ''
+for(i = 0; i<(dim*dim)-9; i++)
+{
+    pass=document.createRange().createContextualFragment("<button type=button onclick=place("+ (i+9).toString() +")></button>")
+    htmlBoard.appendChild(pass)
+}
+    htmlBoard.style.setProperty("--num", dim)
 let buttons = document.getElementsByTagName('button');
 
-const {question} = require('readline-sync')
-
-/*for(i=0, win=false; !win && i<9; i++)
-{   
-    while(!win)
-    {
-        num = parseInt(question("Please enter a number"))
-        test = b.place(num)
-        b.printBoard()
-        win=b.check(num)
-        console.log(win)
-    }
-}*/
-
 function reset() {
-    for(i=0;i<9;i++)
+    for(i=0;i<(dim*dim);i++)
         buttons[i].innerHTML="";
     b.reset()
 }
 
 function place(pos)
 {
+    if(this.gameOver)
+        return null
     player=b.place(pos)
     if(player!="")
         buttons[pos].innerHTML=player;
@@ -147,12 +137,12 @@ function place(pos)
     if(win ==="tie")
     {
         setTimeout(window.alert("Tie"), 50)
-        reset();
+        this.gameOver=true
     }
-    if(win)
+    if(win === true)
     {
         setTimeout(window.alert(player + " wins"), 50)
-        reset
+        this.gameOver=true
     }
 }
 
