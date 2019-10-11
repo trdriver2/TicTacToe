@@ -4,13 +4,14 @@ class Board{
         this.player='X'
         this.turn=0;
         this.dimension=dimension
-        for(let i=0;i<9;i++)
+        this.gameOver=false
+        for(let i=0;i<this.board.length;i++)
             this.board[i]="N"
     }
 
     range(value) //A function that makes sure that a certain index is in range
     {
-        if(value > 8 || value <0)
+        if(value > (this.board.length-1) || value <0)
             return false
         return true
     }
@@ -40,12 +41,14 @@ class Board{
 
     midCheck(init, space, additive)
     {
-        let end=init+((additive)*(this.dimension-1))
+        let end=init+((additive)*(this.dimension))
         for(let i = init; i < end; i+=additive)
         {
+            //console.log(i, this.board[i] !== this.board[space])
             if(this.board[i] !== this.board[space])
                 return false
         }
+        console.log("made it")
         return true
     }
     check(space)
@@ -56,7 +59,6 @@ class Board{
         let bottomRight= b.board.length-1;
         let topRight = this.dimension-1;
         let bottomLeft=bottomRight-topRight
-
         //check horizontal
         if(this.midCheck(horizontal,space,1))
             return true;
@@ -65,14 +67,18 @@ class Board{
         if(this.midCheck(verticle,space,this.dimension))
             return true;
         
+        //console.log(verticle)
+        //console.log(((space-verticle)/(this.dimension)))
+        console.log(verticle === ((space-verticle)/(this.dimension)))
+
         let diagDr = this.dimension+1
         let diagDl = this.dimension-1
         //check diag down-right
-        if(this.midCheck(topLeft,space,diagDr))
-            true
+        if((verticle === ((space-verticle)/(this.dimension))) && this.midCheck(topLeft,space,diagDr))
+            return true
         //check diag down-left
-        if(this.midCheck(topRight,space,diagDl))
-            true
+        if(((this.dimension-verticle)-1 === ((space-verticle)/(this.dimension))) && this.midCheck(topRight,space,diagDl))
+            return true
         
         if(this.turn===this.board.length)
             return "tie"
@@ -83,13 +89,13 @@ class Board{
     printBoard()
     {
         let output="";
-        for(let i = 0; i<9; i++)
+        for(let i = 0; i<this.board.length; i++)
         {
             output+=this.board[i]+" "
             if((i+1)%3 === 0)
                 output+="\n\n"
         }
-        console.log(output)
+        //console.log(output)
     }
 
     reset()
@@ -97,6 +103,7 @@ class Board{
         for(i=0;i<this.board.length;i++)
             this.board[i]='N'
         this.turn=0;
+        this.gameOver=false
     }
 }
 let dim = 3
@@ -107,25 +114,10 @@ let pass = ''
 for(i = 0; i<(dim*dim)-9; i++)
 {
     pass=document.createRange().createContextualFragment("<button type=button onclick=place("+ (i+9).toString() +")></button>")
-    console.log()
     htmlBoard.appendChild(pass)
 }
     htmlBoard.style.setProperty("--num", dim)
 let buttons = document.getElementsByTagName('button');
-
-
-
-/*for(i=0, win=false; !win && i<9; i++)
-{   
-    while(!win)
-    {
-        num = parseInt(question("Please enter a number"))
-        test = b.place(num)
-        b.printBoard()
-        win=b.check(num)
-        console.log(win)
-    }
-}*/
 
 function reset() {
     for(i=0;i<(dim*dim);i++)
@@ -135,6 +127,8 @@ function reset() {
 
 function place(pos)
 {
+    if(this.gameOver)
+        return null
     player=b.place(pos)
     if(player!="")
         buttons[pos].innerHTML=player;
@@ -143,14 +137,13 @@ function place(pos)
     if(win ==="tie")
     {
         setTimeout(window.alert("Tie"), 50)
-        reset();
+        this.gameOver=true
     }
-    if(win)
+    if(win === true)
     {
         setTimeout(window.alert(player + " wins"), 50)
-        reset
+        this.gameOver=true
     }
-    console.log(pos)
 }
 
 
