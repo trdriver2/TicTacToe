@@ -19,7 +19,11 @@
  </div>
 <div class=controlPanel>
   <b>TicTacToe</b><br>
-  <button type="button" onclick="reset()">Restart</button>
+  <button type=button onclick="reset()">Restart</button>
+  <div class=resize>
+    <input id=size type=text placeholder="size greater than 3">
+    <button type=button onclick="browserDraw(document.getElementById('size').value)">Size</button>
+  </div>
 </div>
 </body>
 <script type="text/javascript" src="js/game.js"></script>

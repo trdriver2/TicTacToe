@@ -42,3 +42,14 @@ button:active{
     font-size: 300%;
 } 
 
+.controlPanel .resize{
+    position: relative;
+    padding-top: 10px;
+}
+
+.controlPanel .resize input{
+    height: 30px;
+    width: 170px;
+    padding-bottom: 10px;
+}
+

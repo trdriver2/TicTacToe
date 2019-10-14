@@ -4,6 +4,8 @@ class Board{
         this.player='X'
         this.turn=0;
         this.dimension=dimension
+        this.topLeft=0;
+        this.topRight = this.dimension-1;
         this.gameOver=false
         for(let i=0;i<this.board.length;i++)
             this.board[i]="N"
@@ -53,10 +55,6 @@ class Board{
     {
         let horizontal=space-(space%this.dimension)
         let verticle = space-horizontal
-        let topLeft=0;
-        let bottomRight= b.board.length-1;
-        let topRight = this.dimension-1;
-        let bottomLeft=bottomRight-topRight
         //check horizontal
         if(this.midCheck(horizontal,space,1))
             return true;
@@ -68,10 +66,10 @@ class Board{
         let diagDr = this.dimension+1
         let diagDl = this.dimension-1
         //check diag down-right
-        if((verticle === ((space-verticle)/(this.dimension))) && this.midCheck(topLeft,space,diagDr))
+        if((verticle === ((space-verticle)/(this.dimension))) && this.midCheck(this.topLeft,space,diagDr))
             return true
         //check diag down-left
-        if(((this.dimension-verticle)-1 === ((space-verticle)/(this.dimension))) && this.midCheck(topRight,space,diagDl))
+        if(((this.dimension-verticle)-1 === ((space-verticle)/(this.dimension))) && this.midCheck(this.topRight,space,diagDl))
             return true
         
         if(this.turn===this.board.length)
@@ -99,20 +97,31 @@ class Board{
         this.gameOver=false
     }
 }
-let dim = 3
-let b = new Board(dim)
-let htmlBoard=document.getElementsByClassName("board")[0];
 
-let pass = ''
-for(i = 0; i<(dim*dim)-9; i++)
-{
-    pass=document.createRange().createContextualFragment("<button type=button onclick=place("+ (i+9).toString() +")></button>")
-    htmlBoard.appendChild(pass)
-}
-    htmlBoard.style.setProperty("--num", dim)
+let b = new Board(3)
 let buttons = document.getElementsByTagName('button');
 
-function reset() {
+function browserDraw(dim=3)
+{
+    let htmlBoard=document.getElementsByClassName("board")[0];
+    if(getComputedStyle(htmlBoard).getPropertyValue("--num") > dim)
+        document.location.reload(true)
+
+    let pass = ''
+    for(i = 0; i<(dim*dim)-9; i++)
+    {
+        pass=document.createRange().createContextualFragment("<button type=button onclick=place("+ (i+9).toString() +")></button>")
+        htmlBoard.appendChild(pass)
+    }
+    htmlBoard.style.setProperty("--num", dim)
+    b = new Board(dim)
+    buttons = document.getElementsByTagName('button');
+    reset(dim)
+}
+
+browserDraw();
+
+function reset(dim=3) {
     for(i=0;i<(dim*dim);i++)
         buttons[i].innerHTML="";
     b.reset()
